@@ -22,3 +22,18 @@ jobs:
             - run: docker push pkarczmarczyk/docker-complex-nginx
             - run: docker push pkarczmarczyk/docker-complex-server
             - run: docker push pkarczmarczyk/docker-complex-worker
+
+            - name: Generate deployment package
+              run: zip -r deploy.zip . -x  '*.git*'
+
+            - name: Deploy to EB
+              uses: einaregilsson/beanstalk-deploy@v18
+              with:
+                aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
+                application_name: multi-docker
+                environment_name: Multi-docker-env
+                existing_bucket_name: elasticbeanstalk-us-east-2-010179543153
+                region: us-east-2
+                version_label: ${{ github.sha }}
+                deployment_package: deploy.zip
