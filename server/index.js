@@ -17,7 +17,7 @@ const pgClient = new Pool({
   database: keys.pgDatabase,
   password: keys.pgPassword,
   port: keys.pgPort,
-  ssl: process.env.NODE_ENV === 'production' ? {
+  ssl: keys.pgHost && keys.pgHost.includes('amazonaws.com') ? {
     rejectUnauthorized: false
   } : false,
 });
